@@ -331,17 +331,45 @@ SELECT get_ave_inline FROM DUAL;
 -----3.4------
 SELECT *
 FROM EMPLOYEE
-WHERE to_char(BIRTHDATE, 'yyyy-mm-dd') < '31-DEC-68';
+WHERE BIRTHDATE > DATE '1968-12-31';
 
 create or replace FUNCTION get_emp
 return SYS_REFCURSOR AS tot SYS_REFCURSOR;
 BEGIN 
+    OPEN  tot FOR
     SELECT *
-    INTO tot
     FROM EMPLOYEE
-    WHERE to_char(BIRTHDATE, 'yyyy-mm-dd') < '31-DEC-68';
+    WHERE BIRTHDATE > DATE '1968-12-31';
     RETURN tot;
 END;
 /
 
-SELECT get_emp FROM DUAL;
+
+
+
+
+
+
+
+
+
+CREATE SEQUENCE artist_seq
+MINVALUE 1
+MAXVALUE 99999999999999999
+INCREMENT BY 1
+START WITH 276;
+/
+
+
+CREATE OR REPLACE TRIGGER artist_trigger
+BEFORE INSERT ON artist
+FOR EACH ROW
+
+BEGIN 
+    SELECT artist_seq.NEXTVAL
+    INTO :new.artistid
+    FROM dual;
+END;
+/
+
+INSERT INTO artist (name) VALUES ('Casting Crowns');
